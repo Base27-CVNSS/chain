@@ -164,6 +164,7 @@ function openModal(i){
   const filled=g.fields.filter(f=>vals[f[0]]?.value).length;
   html+=`<section class="group-section" id="group-${g.id}"><div class="group-heading"><h3>${E(g.title)}</h3><span>${filled}/${g.fields.length} mục</span></div><div class="fields">${g.fields.map(f=>fieldHTML(FIELDS.find(x=>x.key===f[0]),vals[f[0]])).join("")}</div></section>`;
  }
+ if(old.dapps?.length){html+='<section class="group-section"><div class="group-heading"><h3>↗ Danh sách dApps từ HTML gốc</h3><span>Link cần kiểm tra hoạt động</span></div><div class="dapp-grid">'+old.dapps.map(app=>{const url=maybeLink({url:app.url});return '<div class="dapp-entry"><b>'+E(app.name)+'</b><p>'+E(app.desc)+'</p>'+(url?'<a href="'+E(url)+'" target="_blank" rel="noopener noreferrer">↗ Truy cập website</a>':'')+'</div>'}).join('')+'</div></section>'}
  $("modalContent").innerHTML=html;$("modalContent").scrollTop=0;$("modalOverlay").classList.add("open");$("modalOverlay").setAttribute("aria-hidden","false");document.body.style.overflow="hidden";$("modalClose").focus();
 }
 function closeModal(){if(!$("modalOverlay").classList.contains("open"))return;$("modalOverlay").classList.remove("open");$("modalOverlay").setAttribute("aria-hidden","true");currentModal=-1;document.body.style.overflow="";lastFocus?.focus?.()}
