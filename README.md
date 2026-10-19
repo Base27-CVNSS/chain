@@ -54,7 +54,7 @@ Mở `index.html` qua một local web server, ví dụ:
 python -m http.server 8080
 ```
 
-Truy cập `http://localhost:8080`. Có thể triển khai GitHub Pages tại **Settings → Pages → Deploy from a branch → main / (root)**. Trang chỉ là mã frontend tĩnh; không có backend/API tự động cập nhật hoặc crawler xác minh.
+Truy cập `http://localhost:8080`. Để **triển khai tự động**, truy cập repo **Settings → Pages → Build and deployment → Source = GitHub Actions**. Workflow `.github/workflows/pages.yml` sẽ deploy mỗi lần cập nhật nhánh `main` sau khi Pages được bật. **Trạng thái ban đầu:** Pages chưa được bật, nên workflow sẽ báo `Get Pages site failed / Not Found` cho đến khi chủ repo thực hiện bước này. Trang chỉ là mã frontend tĩnh; không có backend/API tự động cập nhật hoặc crawler xác minh.
 
 ## Hướng nâng cấp dữ liệu
 
