@@ -2,6 +2,11 @@
 "use strict";
 const D=Array.isArray(window.DATA)?window.DATA:[], DETAIL=window.CHAIN_DETAILS||{}, VSIC=window.VSIC_SECTORS||{};
 const $=id=>document.getElementById(id);
+const TAX=window.ChainTaxonomy;
+const profile=d=>TAX?TAX.classify(d):{smart:"unknown",evm:"unknown",runtime:"",basis:"",fork:{status:"unknown"},stack:null};
+const labelSmart=x=>({yes:"✓ Có hợp đồng",limited:"◐ Script giới hạn",ecosystem:"◈ Qua parachain",unknown:"? Chưa rõ"}[x]||"?");
+const labelEVM=x=>({yes:"✓ EVM",no:"Non-EVM",unknown:"? Chưa rõ"}[x]||"?");
+
 const CHAIN_ICON=d=>window.ChainIcons?window.ChainIcons.avatar(d,false):`<span class="avatar">${E(d.s||d.n)}</span>`;
 const E=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const num=n=>Number(n||0).toLocaleString("vi-VN");
@@ -82,6 +87,9 @@ function coverage(d){return FIELDS.filter(x=>fields(d)[x.key]?.value).length}
 const colors=["#29d5a2","#6da7ff","#f5c477","#ce9aff"];
 function stat(){
  $("statTotal").textContent=num(D.length);
+ if(TAX){const t=TAX.summary(D);$("statSmart").textContent=num(t.smartYes)+" / "+num(t.total);
+ $("statEVM").textContent=num(t.evmYes);$("statFork").textContent=num(t.forkDocumented);$("statUnknown").textContent=num(t.smartUnknown);}
+
  $("statTokens").textContent=num(D.reduce((a,x)=>a+(Number(x.t)||0),0));
  $("statApplied").textContent=num(D.filter(x=>x.vsic?.length).length);
  $("statSectors").textContent=Object.keys(VSIC).filter(c=>D.some(x=>x.vsic?.includes(c))).length+" / "+Object.keys(VSIC).length;
@@ -102,8 +110,8 @@ function setup(){
  for(const c of unique("con"))$("filterConsensus").add(new Option(c,c));
  for(const c of unique("iso"))$("filterISO").add(new Option(c,c));
  Object.entries(VSIC).forEach(([code,label])=>$("filterVSIC").add(new Option(code+" · "+label,code)));
- for(const id of ["search","filterConsensus","filterISO","filterVSIC","filterSort"])$(id).addEventListener(id==="search"?"input":"change",()=>{filterPage=1;table()});
- $("clearFilters").onclick=()=>{$("search").value="";$("filterConsensus").value="";$("filterISO").value="";$("filterVSIC").value="";$("filterSort").value="tokens";filterPage=1;table()};
+ for(const id of ["search","filterConsensus","filterISO","filterVSIC","filterSmart","filterEVM","filterFork","filterSort"])$(id).addEventListener(id==="search"?"input":"change",()=>{filterPage=1;table()});
+ $("clearFilters").onclick=()=>{$("search").value="";$("filterConsensus").value="";$("filterISO").value="";$("filterVSIC").value="";$("filterSmart").value="";$("filterEVM").value="";$("filterFork").value="";$("filterSort").value="tokens";filterPage=1;table()};
  $("modalClose").onclick=closeModal;$("compareClose").onclick=closeCompare;
  $("modalOverlay").addEventListener("click",e=>{if(e.target===$("modalOverlay"))closeModal()});
  $("compareOverlay").addEventListener("click",e=>{if(e.target===$("compareOverlay"))closeCompare()});
@@ -119,13 +127,13 @@ function setup(){
    const v=prompt("Bổ sung / hiệu chỉnh: "+FIELDS.find(x=>x.key===key)?.label+"\nDữ liệu này chỉ lưu trên trình duyệt, chưa được kiểm chứng. Để trống để xóa ghi chú cá nhân.",prev);
    if(v!==null){CHECKED[d.n]??={};CHECKED[d.n][key]=v.trim();save();openModal(i);table()}}
   const a=e.target.closest("[data-jump]");if(a){e.preventDefault();$(a.dataset.jump)?.scrollIntoView({behavior:"smooth",block:"start"})}
-  const b=e.target.closest("[data-export-chain]");if(b)download(D[currentModal].n+".json",JSON.stringify({snapshotDate:"2026-10-16",chain:D[currentModal],checklist:fields(D[currentModal])},null,2),"application/json");
+  const b=e.target.closest("[data-export-chain]");if(b)download(D[currentModal].n+".json",JSON.stringify({snapshotDate:"2026-10-16",chain:D[currentModal],taxonomy:profile(D[currentModal]),checklist:fields(D[currentModal])},null,2),"application/json");
  });
  $("modalContent").addEventListener("keydown",e=>{if(e.key==="Tab"){ /* native keyboard focus stays in modal on supported browsers */ }});
 }
 function selectedRows(){
- const text=$("search").value.trim().toLowerCase(),con=$("filterConsensus").value,iso=$("filterISO").value,sector=$("filterVSIC").value;
- let rows=D.map((d,i)=>({d,i})).filter(({d})=>(!text||(d.n+" "+d.s).toLowerCase().includes(text))&&(!con||d.con===con)&&(!iso||d.iso===iso)&&(!sector||d.vsic?.includes(sector)));
+ const text=$("search").value.trim().toLowerCase(),con=$("filterConsensus").value,iso=$("filterISO").value,sector=$("filterVSIC").value,smart=$("filterSmart").value,evm=$("filterEVM").value,fork=$("filterFork").value;
+ let rows=D.map((d,i)=>({d,i})).filter(({d})=>(!text||(d.n+" "+d.s).toLowerCase().includes(text))&&(!con||d.con===con)&&(!iso||d.iso===iso)&&(!sector||d.vsic?.includes(sector))&&(!smart||profile(d).smart===smart)&&(!evm||profile(d).evm===evm)&&(!fork||(fork==="verified"?profile(d).fork.status==="verified":fork==="unknown"?profile(d).fork.status!=="verified":profile(d).fork.type===fork)));
  const sort=$("filterSort").value;
  rows.sort((a,b)=>sort==="name"?a.d.n.localeCompare(b.d.n,"vi"):sort==="price"?(b.d.p??-Infinity)-(a.d.p??-Infinity):sort==="coverage"?coverage(b.d)-coverage(a.d):(b.d.t||0)-(a.d.t||0));
  return rows;
@@ -134,10 +142,13 @@ function table(){
  const rows=selectedRows(),pages=Math.max(1,Math.ceil(rows.length/pageSize));filterPage=Math.min(filterPage,pages);const start=(filterPage-1)*pageSize;
  $("tableCount").textContent="("+num(rows.length)+")";
  $("chainRows").innerHTML=rows.slice(start,start+pageSize).map(({d,i},j)=>{
-  const p=coverage(d),c=d.con||"Chưa ghi nhận",css=/PoW/i.test(c)?"amber":/PoS|Rollup|L2/i.test(c)?"green":"muted";
+  const p=coverage(d),x=profile(d),c=d.con||"Chưa ghi nhận",css=/PoW/i.test(c)?"amber":/PoS|Rollup|L2/i.test(c)?"green":"muted";
+  const smartHTML='<span class="cap-pill '+(x.smart==="yes"?"yes":x.smart==="unknown"?"unknown":"limited")+'" title="'+E(x.basis)+'">'+E(labelSmart(x.smart))+'</span>';
+  const evmHTML='<span class="cap-pill '+(x.evm==="yes"?"yes":x.evm==="no"?"no":"unknown")+'">'+E(labelEVM(x.evm))+'</span>';
+  const forkHTML=x.fork.status==="verified"?'<span class="cap-pill fork-yes">✓ '+E(x.fork.from)+'</span><small class="fork-kind">'+(x.fork.type==="history"?"Fork chuỗi":"Fork mã nguồn")+'</small>':'<span class="cap-pill unknown" title="Chưa có bằng chứng nguồn gốc fork">— Chưa xác minh</span>';
   const s=(d.vsic||[]).slice(0,5).map(code=>`<span class="sector-badge" title="${E(VSIC[code])}">${E(code)}</span>`).join("")||"—";
-  return `<tr><td>${start+j+1}</td><td><button type="button" class="chain-cell" data-open="${i}">${CHAIN_ICON(d)}<span>${E(d.n)}<span class="ticker" style="display:block">${E(d.s)}</span></span></button></td><td>${money(d.p)}</td><td>${d.t==null?"—":num(d.t)}</td><td><span class="tag ${css}" title="${E(c)}">${E(c)}</span></td><td><span class="tag muted" title="${E(d.networkType||d.iso)}">${E(d.networkType||d.iso)}</span></td><td>${s}</td><td><span class="cover"><span class="cover-track"><i style="width:${p/24*100}%"></i></span>${p}/24</span></td><td><input aria-label="Chọn ${E(d.n)} để so sánh" class="compare-check" type="checkbox" data-select="${i}" ${selected.has(i)?"checked":""}></td></tr>`;
- }).join("")||'<tr><td colspan="9" class="empty-state">Không có kết quả phù hợp.</td></tr>';
+  return `<tr><td>${start+j+1}</td><td><button type="button" class="chain-cell" data-open="${i}">${CHAIN_ICON(d)}<span>${E(d.n)}<span class="ticker" style="display:block">${E(d.s)}</span></span></button></td><td>${money(d.p)}</td><td>${d.t==null?"—":num(d.t)}</td><td><span class="tag ${css}" title="${E(c)}">${E(c)}</span></td><td><span class="tag muted" title="${E(d.networkType||d.iso)}">${E(d.networkType||d.iso)}</span></td><td>${smartHTML}</td><td>${evmHTML}</td><td>${forkHTML}</td><td>${s}</td><td><span class="cover"><span class="cover-track"><i style="width:${p/24*100}%"></i></span>${p}/24</span></td><td><input aria-label="Chọn ${E(d.n)} để so sánh" class="compare-check" type="checkbox" data-select="${i}" ${selected.has(i)?"checked":""}></td></tr>`;
+ }).join("")||'<tr><td colspan="12" class="empty-state">Không có kết quả phù hợp.</td></tr>';
  $("pageInfo").textContent=rows.length?"Hiển thị "+num(start+1)+"–"+num(Math.min(rows.length,start+pageSize))+" / "+num(rows.length):"0 kết quả";
  const controls=[],button=(label,page,disabled,isCurrent)=>`<button ${disabled?"disabled":""} ${isCurrent?'class="current"':""} data-page="${page}" type="button">${label}</button>`;
  controls.push(button("‹",filterPage-1,filterPage===1,false));
@@ -157,10 +168,14 @@ function fieldHTML(def,obj){
 }
 function openModal(i){
  const d=D[i];if(!d)return;
- lastFocus=document.activeElement;currentModal=i;const vals=fields(d),progress=coverage(d),old=DETAIL[d.n]||{};
+ lastFocus=document.activeElement;currentModal=i;const vals=fields(d),progress=coverage(d),old=DETAIL[d.n]||{},tx=profile(d);
  $("modalHeadline").innerHTML=`<div class="modal-title-wrap">${window.ChainIcons?window.ChainIcons.avatar(d,true):CHAIN_ICON(d)}<div><h2 id="modalTitle">${E(d.n)}</h2><p>${E(d.s)} · ${E(d.chainId?"EIP-155:"+d.chainId+" · ":"")}${E(d.networkType||d.iso)} · Hồ sơ ${progress}/24 tiêu chí</p></div></div>`;
  const metric=[["Số token (nguồn cũ)",d.t==null?"Không có dữ liệu":num(d.t)],["Giá snapshot",money(d.p)],["Độ đầy đủ",progress+"/24"],["Ngành VSIC",(d.vsic||[]).length+" ngành"]];
- let html=`<div class="modal-strip">${metric.map(([k,v])=>`<div class="modal-metric"><small>${E(k)}</small><strong>${E(v)}</strong></div>`).join("")}</div><div class="modal-intro"><b>Trạng thái dữ liệu:</b> Bản ghi tĩnh ngày 16/10/2026, không phải dữ liệu thời gian thực. Các giá trị kế thừa nguồn HTML gốc và tham chiếu bổ sung cần được đối chiếu với nguồn chính thức. Hồ sơ ${progress}/24 biểu thị số trường đã được điền, không phải điểm tin cậy.</div>`;
+ let html=`<div class="modal-strip">${metric.map(([k,v])=>`<div class="modal-metric"><small>${E(k)}</small><strong>${E(v)}</strong></div>`).join("")}</div><div class="tax-card-grid">
+ <div class="tax-card"><small>HỢP ĐỒNG THÔNG MINH</small><b>${E(labelSmart(tx.smart))}</b><p>${E(tx.runtime)}. ${E(tx.basis)}</p>${tx.source?'<a target="_blank" rel="noopener noreferrer" href="'+E(tx.source)+'">↗ Xem tài liệu kỹ thuật</a>':""}</div>
+ <div class="tax-card"><small>KHẢ NĂNG TƯƠNG THÍCH EVM</small><b>${E(labelEVM(tx.evm))}</b><p>${tx.stack?"Ngăn xếp: "+E(tx.stack.from):"Tương thích EVM không đồng nghĩa fork Ethereum."}</p>${tx.stack?'<a href="'+E(tx.stack.source)+'" target="_blank" rel="noopener noreferrer">↗ Nguồn stack</a>':""}</div>
+ <div class="tax-card"><small>FORK VÀ NGUỒN GỐC</small><b>${tx.fork.status==="verified"?"✓ "+E(tx.fork.from):"— Chưa có bằng chứng"}</b><p>${E(tx.fork.detail||"Chưa chứng thực quan hệ mã nguồn hoặc lịch sử.")}</p>${tx.fork.source?'<a href="'+E(tx.fork.source)+'" target="_blank" rel="noopener noreferrer">↗ Nguồn fork</a>':""}</div>
+ </div><div class="modal-intro"><b>Trạng thái dữ liệu:</b> Bản ghi tĩnh ngày 16/10/2026, không phải dữ liệu thời gian thực. Các giá trị kế thừa nguồn HTML gốc và tham chiếu bổ sung cần được đối chiếu với nguồn chính thức. Hồ sơ ${progress}/24 biểu thị số trường đã được điền, không phải điểm tin cậy.</div>`;
  if(old.overview)html+=`<div class="modal-summary"><b>Tổng quan theo tệp HTML gốc</b><div>${E(old.overview)}</div>${old.history?`<p><b>Lịch sử theo nguồn cũ:</b> ${E(old.history)}</p>`:""}</div>`;
  html+=`<div class="modal-actions"><button class="btn ghost" type="button" data-export-chain="1">↓ Xuất hồ sơ JSON</button><span class="badge-note">✎ Hiệu chỉnh lưu cục bộ trên trình duyệt; không ghi vào GitHub.</span></div>`;
  html+=`<nav class="modal-tabs" aria-label="Mục lục checklist">${GROUPS.map((g,j)=>`<a href="#group-${g.id}" data-jump="group-${g.id}">${j+1}. ${E(g.title.split("· ")[1])}</a>`).join("")}</nav>`;
@@ -174,7 +189,7 @@ function openModal(i){
 function closeModal(){if(!$("modalOverlay").classList.contains("open"))return;$("modalOverlay").classList.remove("open");$("modalOverlay").setAttribute("aria-hidden","true");currentModal=-1;document.body.style.overflow="";lastFocus?.focus?.()}
 function openCompare(){
  lastFocus=document.activeElement;const ids=[...selected],fieldsArr=ids.map(i=>fields(D[i]));
- $("compareContent").innerHTML=ids.length<2?'<div class="empty-state"><h3>Chọn từ 2 đến 3 blockchain để so sánh</h3><p>Đánh dấu ô ở cột “So sánh” trong danh mục, sau đó nhấn nút So sánh.</p></div>':`<div class="modal-intro">Bảng đối chiếu 24 tiêu chí, dùng dữ liệu nguồn tĩnh và hiệu chỉnh cục bộ nếu có. Không dùng điểm điền đủ để xếp hạng an toàn.</div><div class="comparison-scroll"><table class="comparison-table"><thead><tr><th>TIÊU CHÍ</th>${ids.map(i=>`<th>${E(D[i].n)}<br><small>${coverage(D[i])}/24</small></th>`).join("")}</tr></thead><tbody>${GROUPS.map(g=>`<tr><td colspan="${ids.length+1}"><b>${E(g.title)}</b></td></tr>${g.fields.map(f=>`<tr><td>${E(f[1])}</td>${fieldsArr.map(vals=>`<td>${E(vals[f[0]]?.value||"—")} ${maybeLink(vals[f[0]])?`<a href="${E(maybeLink(vals[f[0]]))}" target="_blank" rel="noopener noreferrer"> ↗</a>`:""}</td>`).join("")}</tr>`).join("")}`).join("")}</tbody></table></div>`;
+ $("compareContent").innerHTML=ids.length<2?'<div class="empty-state"><h3>Chọn từ 2 đến 3 blockchain để so sánh</h3><p>Đánh dấu ô ở cột “So sánh” trong danh mục, sau đó nhấn nút So sánh.</p></div>':`<div class="modal-intro">Bảng đối chiếu 24 tiêu chí, dùng dữ liệu nguồn tĩnh và hiệu chỉnh cục bộ nếu có. Không dùng điểm điền đủ để xếp hạng an toàn.</div><div class="comparison-scroll"><table class="comparison-table"><thead><tr><th>TIÊU CHÍ</th>${ids.map(i=>`<th>${E(D[i].n)}<br><small>${coverage(D[i])}/24</small></th>`).join("")}</tr></thead><tbody><tr><td colspan="${ids.length+1}"><b>Hợp đồng, EVM & quan hệ fork</b></td></tr>${[["Smart contract","smart"],["Runtime","runtime"],["EVM","evm"],["Fork type","fork"],["Fork from","forkFrom"]].map(([label,k])=>`<tr><td>${E(label)}</td>${ids.map(i=>{const t=profile(D[i]);return `<td>${E(k==="fork"?t.fork.type||"Chưa xác minh":k==="forkFrom"?t.fork.from||"—":t[k]||"—")}</td>`}).join("")}</tr>`).join("")}${GROUPS.map(g=>`<tr><td colspan="${ids.length+1}"><b>${E(g.title)}</b></td></tr>${g.fields.map(f=>`<tr><td>${E(f[1])}</td>${fieldsArr.map(vals=>`<td>${E(vals[f[0]]?.value||"—")} ${maybeLink(vals[f[0]])?`<a href="${E(maybeLink(vals[f[0]]))}" target="_blank" rel="noopener noreferrer"> ↗</a>`:""}</td>`).join("")}</tr>`).join("")}`).join("")}</tbody></table></div>`;
  $("compareOverlay").classList.add("open");$("compareOverlay").setAttribute("aria-hidden","false");document.body.style.overflow="hidden";$("compareClose").focus();
 }
 function closeCompare(){if(!$("compareOverlay").classList.contains("open"))return;$("compareOverlay").classList.remove("open");$("compareOverlay").setAttribute("aria-hidden","true");document.body.style.overflow="";lastFocus?.focus?.()}
@@ -182,14 +197,14 @@ function download(name,content,mime){
  const blob=new Blob([content],{type:mime+";charset=utf-8"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
 }
 function exportCSV(){
- const columns=["name","symbol","priceSnapshot","tokenCount","consensusSnapshot","isoSnapshot","vsicCodes",...FIELDS.map(x=>x.key)];
+ const columns=["name","symbol","priceSnapshot","tokenCount","consensusSnapshot","isoSnapshot","vsicCodes","smartContract","evmCompatible","runtime","forkVerified","forkType","forkOrigin","forkSource","classificationSource",...FIELDS.map(x=>x.key)];
  const csv=[columns.join(",")];for(const {d} of selectedRows()){
-  const vals=fields(d);const row=[d.n,d.s,d.p??"",d.t??"",d.con||"",d.iso||"",(d.vsic||[]).join("|"),...FIELDS.map(f=>vals[f.key]?.value||"")];
+  const vals=fields(d),tx=profile(d);const row=[d.n,d.s,d.p??"",d.t??"",d.con||"",d.iso||"",(d.vsic||[]).join("|"),tx.smart,tx.evm,tx.runtime,tx.fork.status==="verified",tx.fork.type||"",tx.fork.from||"",tx.fork.source||"",tx.source||"",...FIELDS.map(f=>vals[f.key]?.value||"")];
   csv.push(row.map(x=>'"'+String(x).replace(/"/g,'""')+'"').join(","));
  }
  download("chainscope-24-checklist.csv","\ufeff"+csv.join("\r\n"),"text/csv");
 }
-function exportJSON(){download("chainscope-snapshot.json",JSON.stringify({source:"Uploaded HTML snapshot dated 2026-10-16; unverified",categories:GROUPS,vsic:VSIC,chains:D,legacyDetails:DETAIL,editorialReferences:KNOWN,localOverrides:CHECKED},null,2),"application/json")}
+function exportJSON(){download("chainscope-snapshot.json",JSON.stringify({source:"Uploaded HTML snapshot dated 2026-10-16; unverified",categories:GROUPS,vsic:VSIC,chains:D,chainTaxonomy:D.map(d=>({name:d.n,...profile(d)})),legacyDetails:DETAIL,editorialReferences:KNOWN,localOverrides:CHECKED},null,2),"application/json")}
 stat();setup();table();counts();
 document.addEventListener("chainscope:updated",e=>{
   const f=$("filterConsensus"),old=f.value;f.innerHTML='<option value="">Tất cả đồng thuận</option>';
