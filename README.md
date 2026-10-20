@@ -1,67 +1,56 @@
-# ChainScope — Blockchain Intelligence Dashboard
+# ChainScope 600 · Web3 Neon Dashboard
 
-Giao diện phân tích blockchain bằng tiếng Việt, chạy tĩnh trên GitHub Pages. Được phát triển từ tệp HTML mẫu do người dùng cung cấp, dựa trên **257 dòng blockchain/chain-ecosystem**, 21 ngành VSIC 2018 và 24 tiêu chí kiểm tra thuộc 5 nhóm.
+**Updated:** 2026-10-20 (UTC). This static GitHub Pages dashboard currently displays **600 catalog records**:
+- 257 legacy blockchain/ecosystem records, preserved from the uploaded HTML snapshot dated 2026-10-16.
+- 343 additional EVM network records selected from the public [ChainList network registry](https://chainlist.org/rpcs.json). Mainnet/testnet filtering, canonical name deduplication, and unique EIP-155 chain IDs are applied.
+- Selection is intentionally **capped at 600** for browsing. It is **not a claim that exactly 600 active blockchains exist worldwide**. The registry contains substantially more candidates, including L2, sidechains, and smaller EVM networks. Listing does not verify uptime, decentralization, token market value, or mainnet operation.
+- Non-EVM chains remain in the original 257 records. Market-price fields for new registry entries are intentionally blank rather than fabricated.
 
-## Tính năng
+## New Web3 UI
 
-- Tổng quan: số chain, tổng *token count* trong dữ liệu gốc, mức phủ ngành và phân bổ theo mô hình đồng thuận/permission.
-- Tìm kiếm tên/ticker; lọc consensus, ISO (mô hình truy cập), VSIC; sắp xếp giá snapshot, số token, tên hoặc độ đầy đủ.
-- Popup có **toàn bộ 24 trường cho mọi chain**, gồm số thứ tự, diễn giải, giá trị, tình trạng dữ liệu, liên kết tham khảo khi có.
-- So sánh tối đa 3 chain bằng ma trận 24 tiêu chí.
-- Xuất CSV các bản ghi đang lọc, xuất JSON dữ liệu toàn bộ, hoặc JSON hồ sơ đang mở.
-- Bổ sung thủ công dữ liệu từng trường; lưu cục bộ trong `localStorage` (không upload hoặc sửa GitHub), có thể xuất JSON.
-- Responsive mobile/tablet/desktop; điều khiển đóng popup bằng Escape/nhấp nền.
+Deep violet, electric cyan, mint-neon, and indigo glass styling with mobile responsive layouts, animated hover illumination, gradient hero, and charts. Every chain row has a distinctive visual identity:
+- **Actual chain artwork** is used when a unique chain name/slug matches an asset in [DefiLlama/icons](https://github.com/DefiLlama/icons/tree/v2/assets/chains), selected from an index of 865 PNG/JPEG/WEBP assets.
+- When no official/third-party hosted logo match can be established or an image fails to load, the UI displays a **unique branded-looking deterministic monogram**. That fallback is **not claimed to be an official chain logo**. Do not interpret this as 600 verified official brand logos.
+- Logo paths reference the upstream repository and require a browser network connection. All fallback avatars work without it.
 
-## 24 tiêu chí
+## Features
 
-1–6: Founders, launch year, whitepaper, official website, docs, GitHub/source code.
+- 600-row chain directory with search, consensus/permission/VSIC filters, sorting and 30-row pagination.
+- Per-chain popup exposes **all 24 checklist criteria**, grouped into 5 categories.
+- Technical provenance for imported records: **Chain ID**, official website listed by registry, block explorer, architecture classification when derivable; no invented TPS, validators, capitalization, supply, fees, or founder names.
+- Full CSV and JSON export, up to 3 blockchain comparison, local-only field corrections.
+- Legacy trend charts retain their original scope. Missing token counts for new chains are not interpreted as zero tokens.
 
-7–11: Consensus, architecture, security, decentralization, validator control.
-
-12–17: Native coin/token, total supply, circulating supply, market cap, gas fee, wallet count.
-
-18–20: dApps/use cases, community, explorer.
-
-21–24: TPS/block time, finality, pros, cons.
-
-## Nguồn và trạng thái chứng cứ
-
-**Dữ liệu nhập:** `data.js` được trích xuất nguyên từ tệp HTML gốc (bản ghi ngày **16/10/2026**) gồm `VSIC_SECTORS`, `CHAIN_DETAILS`, `DATA`. Không kết nối API thị trường. Giá, thay đổi giá, market cap và số token là số liệu lịch sử; không dùng như dữ liệu đầu tư cập nhật. Tổng token trong bảng KPI được **tính lại từ các bản ghi** thay vì dùng con số badge gắn cứng trong bản gốc.
-
-**Tham chiếu biên tập:** `KNOWN` trong `app.js`, chỉ dành cho một số chain nổi bật. Links website/docs/repo/explorer là các đường dẫn cần được kiểm tra định kỳ. Năm, kiến trúc, nhận định pros/cons là dữ liệu tham khảo, **không phải xác minh độc lập hoặc audit**.
-
-**Bổ sung cá nhân:** giá trị lưu trên trình duyệt, chỉ hiển thị cục bộ, không đồng bộ hay được chứng thực. Từng trường hiển thị provenance của mình.
-
-**Thiếu dữ liệu:** hiển thị “Chưa có dữ liệu / cần kiểm chứng”, không suy đoán số ví, TPS, cung lưu hành, gas, finality hoặc địa chỉ chính thức khi nguồn không có. “Độ đầy đủ X/24” chỉ đo số trường có giá trị, không đo chất lượng dự án.
-
-**Lưu ý chuẩn:** ISO 22739:2020 là tiêu chuẩn về thuật ngữ blockchain/DLT; nhãn public/permissionless/permissioned trong dữ liệu này là một phép phân loại **tham khảo**, không phải một chứng nhận ISO. VSIC thể hiện gán ngành dự kiến/được người biên soạn liên hệ, không mặc nhiên chứng minh dApp hoạt động trong ngành đó. `DATA` cũng có thể gồm L2, giao thức và token được mô tả như chain; cần rà soát thực thể trước khi thống kê ở quy mô nghiên cứu.
-
-## Cấu trúc repo
+## Data architecture
 
 ```
-index.html   # Layout, sidebar, charts, bảng và 2 popup
-styles.css   # Responsive UI/UX
-data.js      # Bản chụp dữ liệu đầu vào giữ nguyên từ HTML
-app.js       # Tạo checklist, lọc/sort, so sánh, export, ghi chú cục bộ
-README.md    # Phương pháp và hướng dẫn
+index.html                       Static UI shell
+styles.css, neon.css              Layout and Web3 neon design
+data.js                           Legacy 257 records; historical
+registry-core.js                  Canonical identity, filtering, deduplication, 600 cap
+registry-snapshot.js              Generated static 343-record addendum (GitHub Actions)
+registry-loader.js                Immediate static load; online ChainList fallback if missing
+chain-logos.js                    865 original filename entries from DefiLlama/icons
+chain-icons.js                    Verified asset matching + nonofficial monogram fallback
+app.js                            Charts, table, search, checklist, compare, export
+scripts/update-chains.cjs         Reproducible Node 22 snapshot generator
+.github/workflows/update-registry.yml  Weekly registry refresh + commit
+.github/workflows/pages.yml       GitHub Pages deployment
 ```
 
-## Khởi chạy
+**Update registry:** run `node scripts/update-chains.cjs` on Node 22+, then commit `registry-snapshot.js`. GitHub Actions also refreshes the snapshot weekly (Monday) and on relevant source-code changes; requires Actions write permission. The source list is `https://chainlist.org/rpcs.json` (records include `isTestnet`, `nativeCurrency`, `chainId`, and where available explorers/infoURL and metadata). The generator validates count **550–650** and rejects duplicate EIP-155 chain IDs. If the API is unavailable and no snapshot is bundled, the site honestly falls back to 257 historical records.
 
-Mở `index.html` qua một local web server, ví dụ:
+**Local:** use `python -m http.server 8080`, then open `http://localhost:8080`. For website publishing, choose **Settings → Pages → Source: GitHub Actions**.
 
-```sh
-python -m http.server 8080
-```
+## Interpreting this dashboard
 
-Truy cập `http://localhost:8080`. Để **triển khai tự động**, truy cập repo **Settings → Pages → Build and deployment → Source = GitHub Actions**. Workflow `.github/workflows/pages.yml` sẽ deploy mỗi lần cập nhật nhánh `main` sau khi Pages được bật. **Trạng thái ban đầu:** Pages chưa được bật, nên workflow sẽ báo `Get Pages site failed / Not Found` cho đến khi chủ repo thực hiện bước này. Trang chỉ là mã frontend tĩnh; không có backend/API tự động cập nhật hoặc crawler xác minh.
+- **24-field completion count is not a trust, safety, or investment rating.**
+- **Price, market capitalization, TVL and token counts are not live** unless specifically marked and sourced. Legacy figures are snapshots from user-supplied material.
+- ISO 22739 is a terminology standard; class labels on the page **do not constitute ISO certification**.
+- VSIC sector tags mean proposed/recorded industry associations, not proof of deployed and audited applications.
+- ChainList lists EVM networks, not every L1 or non-EVM ecosystem. Mainnet filtering is a heuristic; verify ambiguous networks independently via explorer, official docs, and activity before making claims.
+- No wallet connection or trading transaction is performed. No investment advice.
 
-## Hướng nâng cấp dữ liệu
+Sources: [ethereum-lists/chains](https://github.com/ethereum-lists/chains), [DefiLlama/chainlist](https://github.com/DefiLlama/chainlist), [DefiLlama/icons](https://github.com/DefiLlama/icons).
 
-1. Tạo `chains_verified.json` chuẩn hóa `chainId`, `field`, `value`, `sourceUrl`, `observedAt`, `verifiedAt`, `confidence`; phân biệt mainnet/testnet/network/token.
-2. Thu thập thị trường từ nhà cung cấp dữ liệu có giấy phép và có caching/rate limit; lưu lại timestamp, unit, công thức.
-3. Thu thập consensus/validator/TPS/finality từ docs chính thức và block explorers, định nghĩa phương pháp so sánh.
-4. Kiểm tra bảo mật/nhà cung cấp với bằng chứng audit, lưu chữ ký băm snapshot nếu cần đối chiếu lịch sử.
-5. Bổ sung kiểm thử tích hợp cho 24 trường và quy trình review trước khi publish.
-
-Không phải lời khuyên đầu tư.
+© 2026 Base27-CVNSS.
