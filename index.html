@@ -4,13 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="description" content="ChainScope — bảng phân tích và kiểm kê 24 tiêu chí blockchain, phân loại VSIC 2018 và kiến trúc mạng.">
-<title>ChainScope | Blockchain Intelligence</title>
-<link rel="stylesheet" href="./styles.css">
+<title>ChainScope 600 | Web3 Neon Blockchain Intelligence</title>
+<link rel="stylesheet" href="./styles.css">\n<link rel="stylesheet" href="./neon.css">
 </head>
 <body>
 <div class="shell">
   <aside class="sidebar" aria-label="Thanh điều hướng">
-    <a class="brand" href="#tongquan" aria-label="ChainScope"><span class="brand-logo">⬡</span><span><b>ChainScope</b><small>BLOCKCHAIN INTELLIGENCE</small></span></a>
+    <a class="brand" href="#tongquan" aria-label="ChainScope"><span class="brand-logo">⬡</span><span><b>ChainScope</b><small>WEB3 CHAIN INTELLIGENCE</small></span></a>
     <div class="nav-cap">KHÔNG GIAN PHÂN TÍCH</div>
     <a class="nav active" href="#tongquan"><span>▣</span> Tổng quan</a>
     <a class="nav" href="#thumuc"><span>▤</span> Danh mục blockchain</a>
@@ -21,7 +21,7 @@
     <button class="nav" id="downloadJSON" type="button"><span>↓</span> Xuất bộ dữ liệu JSON</button>
     <div class="sidebar-end">
       <div class="source-mark"><span class="live-dot"></span> Bộ dữ liệu tĩnh · 16/10/2026</div>
-      <p>Dữ liệu từ tệp HTML gốc. Không phải số liệu thị trường hoặc TPS thời gian thực.</p>
+      <p>Kế thừa 257 hồ sơ; mở rộng bằng ChainList (mainnet EVM, L2). Không coi việc được liệt kê là bằng chứng chain đang hoạt động.</p>
       <a href="https://github.com/Base27-CVNSS/chain" target="_blank" rel="noopener noreferrer">↗ Mã nguồn GitHub</a>
     </div>
   </aside>
@@ -29,17 +29,17 @@
     <header class="topbar">
       <button class="mobile-menu" id="menuToggle" aria-label="Mở menu" type="button">☰</button>
       <div class="crumb">TRUNG TÂM DỮ LIỆU <span>/</span> <b>TOÀN CẢNH BLOCKCHAIN</b></div>
-      <div class="actions"><span class="snapshot"><span class="clock">◷</span> Snapshot 16.10.2026</span><button class="btn ghost" id="exportCSV" type="button">↓ Xuất CSV</button><button class="btn primary" id="compareButton" type="button">⚖ So sánh <span id="compareButtonCount">0</span></button></div>
+      <div class="actions"><span class="snapshot"><span class="clock">◷</span> <span id="registryStatus">Đang kiểm tra danh mục</span></span><button class="btn ghost" id="exportCSV" type="button">↓ Xuất CSV</button><button class="btn primary" id="compareButton" type="button">⚖ So sánh <span id="compareButtonCount">0</span></button></div>
     </header>
     <section class="hero">
       <div class="eyebrow"><span class="eyebrow-dot"></span> BẢNG PHÂN TÍCH BLOCKCHAIN TOÀN DIỆN <span class="vlabel">PHIÊN BẢN 2.0</span></div>
-      <h1>Hệ sinh thái <em>Blockchain</em><br>qua dữ liệu &amp; bằng chứng.</h1>
-      <p>Khảo sát kiến trúc, sự phân quyền, kinh tế token và ứng dụng theo ngành. Mỗi blockchain có hồ sơ <b>24 tiêu chí / 5 nhóm</b>, trạng thái đầy đủ và nguồn tham chiếu rõ ràng.</p>
-      <div class="hero-bottom"><span>◉ ISO/permission model · phân loại tham khảo</span><span>◈ VSIC 2018 · ngành sử dụng tiềm năng</span><span>✓ Chưa có dữ liệu ≠ Không tồn tại</span></div>
+      <h1><span class="hero-orbit">◈ WEB3 / CHAIN INTELLIGENCE</span><br>Khám phá <em>600 blockchain</em><br>trên một nền tảng dữ liệu.</h1>
+      <p>Từ Bitcoin, Ethereum, Solana đến các mạng EVM và Layer 2 mới: khám phá kiến trúc, phân quyền, tokenomics và ứng dụng thực tế bằng <b>24 tiêu chí / 5 nhóm</b>. Số mạng hiển thị phụ thuộc nguồn và kiểm tra trùng lặp.</p>
+      <div class="hero-bottom"><span>◉ MAINNET / EVM / L2 · CÓ MÃ ĐỊNH DANH</span><span>◈ ĐỐI CHIẾU CHAIN ID / EXPLORER</span><span>✓ Chưa có dữ liệu ≠ Không tồn tại</span></div>
     </section>
     <section class="kpis" aria-label="Thống kê bộ dữ liệu">
-      <article class="kpi"><div class="kpi-label">CHAIN TRONG BỘ DỮ LIỆU <span class="kpi-icon">⬡</span></div><strong id="statTotal">—</strong><small>Bản ghi nhập từ HTML gốc</small></article>
-      <article class="kpi"><div class="kpi-label">TOKEN ĐƯỢC GHI NHẬN <span class="kpi-icon blue">◈</span></div><strong id="statTokens">—</strong><small>Đếm token theo nguồn gốc; không phải tổng cung</small></article>
+      <article class="kpi"><div class="kpi-label">BLOCKCHAIN & MẠNG TRONG DANH MỤC <span class="kpi-icon">⬡</span></div><strong id="statTotal">—</strong><small>257 hồ sơ kế thừa + mạng EVM từ nguồn ngoài</small></article>
+      <article class="kpi"><div class="kpi-label">TOKEN ĐƯỢC GHI NHẬN <span class="kpi-icon blue">◈</span></div><strong id="statTokens">—</strong><small>Token count từ 257 hồ sơ gốc; các mạng mới chưa có</small></article>
       <article class="kpi"><div class="kpi-label">CHAIN GẮN NGÀNH VSIC <span class="kpi-icon cyan">▥</span></div><strong id="statApplied">—</strong><small>Phân loại tham khảo, không chứng minh triển khai</small></article>
       <article class="kpi"><div class="kpi-label">ĐỘ PHỦ NGÀNH VSIC <span class="kpi-icon gold">▦</span></div><strong id="statSectors">—</strong><small>Trên 21 ngành cấp 1</small></article>
     </section>
@@ -50,7 +50,7 @@
       <article class="panel chart-wide"><div class="panel-heading"><div><span class="section-index">04 / NGÀNH KINH TẾ</span><h2>Phân bổ theo VSIC 2018</h2></div><span class="chip">Một chain có thể thuộc nhiều ngành</span></div><div id="vsicChart" class="vsic-bars"></div></article>
     </section>
     <section class="registry" id="thumuc">
-      <div class="registry-heading"><div><span class="section-index">05 / REGISTRY</span><h2>Danh mục blockchain <span id="tableCount" class="table-count"></span></h2><p>Nhấn vào tên blockchain để mở hồ sơ chi tiết đầy đủ 24 mục.</p></div><button class="btn ghost" id="clearFilters" type="button">↺ Xóa bộ lọc</button></div>
+      <div class="registry-heading"><div><span class="section-index">05 / REGISTRY</span><h2>Danh mục blockchain <span id="tableCount" class="table-count"></span></h2><p>Nhấn vào blockchain để xem 24 tiêu chí · mỗi mạng có logo gốc khi có nguồn và icon dự phòng khi thiếu.</p></div><button class="btn ghost" id="clearFilters" type="button">↺ Xóa bộ lọc</button></div>
       <div class="filters"><label class="search-wrap"><span>⌕</span><input id="search" type="search" placeholder="Tìm tên blockchain, mã ticker..." aria-label="Tìm blockchain"></label>
         <select id="filterConsensus" aria-label="Lọc đồng thuận"><option value="">Tất cả đồng thuận</option></select>
         <select id="filterISO" aria-label="Lọc mô hình mạng"><option value="">Tất cả mô hình mạng</option></select>
@@ -61,7 +61,7 @@
       <div class="pagination"><span id="pageInfo"></span><div id="pageButtons" class="page-buttons"></div></div>
       <p class="table-footnote">* Giá, phân loại và token count được lưu từ bản HTML ngày 16/10/2026, chưa được cập nhật trực tiếp. “Hồ sơ” đo mức độ điền thông tin, không phản ánh an toàn hay giá trị đầu tư.</p>
     </section>
-    <section class="method panel" id="phuongphap"><div><span class="section-index">06 / MINH BẠCH</span><h2>Cách đọc dữ liệu</h2></div><p>Dashboard giữ nguyên bộ dữ liệu nền từ tệp HTML được cung cấp. 24 tiêu chí được chuẩn hóa theo 5 nhóm. Các trường không có bằng chứng được đánh dấu <b>Chưa có dữ liệu</b> thay vì tự suy diễn. Những trường “Dữ liệu gốc” là thông tin lịch sử, chưa xác minh độc lập; giá và vốn hóa không phải dữ liệu thời gian thực. Phân loại ISO 22739 chỉ được dùng như thuật ngữ tham khảo, không phải chứng nhận đạt chuẩn ISO.</p></section>
+    <section class="method panel" id="phuongphap"><div><span class="section-index">06 / MINH BẠCH</span><h2>Cách đọc dữ liệu</h2></div><p>Dashboard giữ nguyên 257 hồ sơ nền từ tệp HTML và bổ sung mạng EVM từ ChainList (có Chain ID, lọc testnet). 24 tiêu chí được chuẩn hóa theo 5 nhóm. Các trường không có bằng chứng được đánh dấu <b>Chưa có dữ liệu</b> thay vì tự suy diễn. Những trường “Dữ liệu gốc” là thông tin lịch sử, chưa xác minh độc lập; giá và vốn hóa không phải dữ liệu thời gian thực. Phân loại ISO 22739 chỉ được dùng như thuật ngữ tham khảo, không phải chứng nhận đạt chuẩn ISO.</p></section>
     <footer>© 2026 Base27-CVNSS · ChainScope · Minh bạch về nguồn dữ liệu, không phải tư vấn đầu tư.</footer>
   </main>
 </div>
