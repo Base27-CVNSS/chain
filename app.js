@@ -65,7 +65,10 @@ function fields(d){
  put("totalSupply",old.totalSupply);
  put("marketCap",old.marketCap&&old.marketCap+" · Giá trị lịch sử trong dữ liệu gốc (16/10/2026)");
  put("decentralization",old.decentralized);
- put("consensus",d.con==="Not recorded"?"":d.con);\n if(d.chainId){put("architecture",(d.networkType==="L2"?"Ethereum L2 / EVM":"EVM-compatible network")+" · EIP-155 chain ID "+d.chainId,"registry");}\n if(d.website)put("website","Trang được liệt kê trong ChainList","registry",d.website);\n if(d.explorer)put("explorer","Block explorer trong ChainList","registry",d.explorer);
+ put("consensus",d.con==="Not recorded"?"":d.con);
+ if(d.chainId){put("architecture",(d.networkType==="L2"?"Ethereum L2 / EVM":"EVM-compatible network")+" · EIP-155 chain ID "+d.chainId,"registry");}
+ if(d.website)put("website","Trang được liệt kê trong ChainList","registry",d.website);
+ if(d.explorer)put("explorer","Block explorer trong ChainList","registry",d.explorer);
  put("coin",d.s&&d.s!=="—"?(d.s+" · ticker ghi trong bộ dữ liệu nguồn; xác nhận native/token riêng còn cần kiểm tra"):null);
  if(old.dapps?.length)put("dapps",old.dapps.map(x=>x.name+" ("+x.desc+")").join("; "));
  for(let [k,v] of Object.entries(known)){
