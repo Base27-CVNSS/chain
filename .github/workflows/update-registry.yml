@@ -25,6 +25,12 @@ jobs:
           node-version: '22'
       - name: Pull and validate source data
         run: node scripts/update-chains.cjs
+      - name: Check JavaScript syntax and taxonomy integrity
+        run: |
+          node --check app.js
+          node --check chain-taxonomy.js
+          node --check registry-core.js
+          node scripts/test-taxonomy.cjs
       - name: Save generated snapshot to repository
         run: |
           git config user.name "github-actions[bot]"
