@@ -44,6 +44,18 @@
       <article class="kpi"><div class="kpi-label">CHAIN GẮN NGÀNH VSIC <span class="kpi-icon cyan">▥</span></div><strong id="statApplied">—</strong><small>Phân loại tham khảo, không chứng minh triển khai</small></article>
       <article class="kpi"><div class="kpi-label">ĐỘ PHỦ NGÀNH VSIC <span class="kpi-icon gold">▦</span></div><strong id="statSectors">—</strong><small>Trên 21 ngành cấp 1</small></article>
     </section>
+    <section class="capability-dashboard" id="nangluc">
+      <div class="capability-heading"><div><span class="section-index">SMART CONTRACTS / EVM / FORK ANALYSIS</span><h2>Khả năng thực thi &amp; nguồn gốc blockchain</h2><p>Phân loại trong danh mục hiện tại, không phải tỷ lệ toàn ngành. EVM-compatible không có nghĩa fork Ethereum.</p></div>
+        <a href="https://www.alchemy.com/dapps/top/blockchains" target="_blank" rel="noopener noreferrer">↗ Đối chiếu Alchemy</a>
+      </div>
+      <div class="cap-grid">
+        <article class="cap-stat"><span class="cap-icon purple">◉</span><small>HỢP ĐỒNG THÔNG MINH</small><strong id="statSmart">—</strong><p>Đã phân loại có runtime hợp đồng</p></article>
+        <article class="cap-stat"><span class="cap-icon cyan">⬡</span><small>TƯƠNG THÍCH EVM</small><strong id="statEVM">—</strong><p>Chuẩn thực thi, không phải fork</p></article>
+        <article class="cap-stat"><span class="cap-icon gold">⑂</span><small>FORK CÓ NGUỒN XÁC MINH</small><strong id="statFork">—</strong><p>Mã nguồn hoặc chia tách lịch sử</p></article>
+        <article class="cap-stat"><span class="cap-icon muted">?</span><small>SMART CONTRACT CHƯA RÕ</small><strong id="statUnknown">—</strong><p>Không tự tính thành không hỗ trợ</p></article>
+      </div>
+      <p class="cap-disclaimer">✓ EVM lấy từ danh mục mạng EVM / tài liệu đã đối chiếu; không bảo đảm mainnet đang chạy. ✓ Fork chỉ hiển thị khi có nguồn gốc được ghi nhận. — nghĩa là chưa kiểm chứng, không phải phủ định.</p>
+    </section>
     <section class="insights" id="nganh">
       <article class="panel chart-wide"><div class="panel-heading"><div><span class="section-index">01 / THỊ TRƯỜNG</span><h2>Top 10 hệ sinh thái theo số token</h2></div><span class="chip">Không phải market cap</span></div><div id="topChart" class="bars" aria-label="Biểu đồ số token"></div></article>
       <article class="panel"><div class="panel-heading"><div><span class="section-index">02 / KIẾN TRÚC</span><h2>Mô hình truy cập mạng</h2></div></div><div class="ring-box"><div class="ring" id="isoRing"><div class="ring-inner"><b id="ringNumber">—</b><small>chains</small></div></div></div><div id="isoLegend" class="legend"></div></article>
@@ -56,9 +68,12 @@
         <select id="filterConsensus" aria-label="Lọc đồng thuận"><option value="">Tất cả đồng thuận</option></select>
         <select id="filterISO" aria-label="Lọc mô hình mạng"><option value="">Tất cả mô hình mạng</option></select>
         <select id="filterVSIC" aria-label="Lọc VSIC"><option value="">Tất cả ngành VSIC</option></select>
+        <select id="filterSmart" aria-label="Lọc hợp đồng thông minh"><option value="">Tất cả Smart Contract</option><option value="yes">✓ Hỗ trợ smart contract</option><option value="limited">◐ Script hạn chế</option><option value="ecosystem">◈ Qua hệ sinh thái</option><option value="unknown">? Chưa xác minh</option></select>
+        <select id="filterEVM" aria-label="Lọc EVM"><option value="">Tất cả EVM / Non-EVM</option><option value="yes">✓ EVM</option><option value="no">Non-EVM</option><option value="unknown">? Chưa phân loại</option></select>
+        <select id="filterFork" aria-label="Lọc nguồn gốc fork"><option value="">Tất cả Fork</option><option value="verified">✓ Fork đã có nguồn</option><option value="code">Fork mã nguồn</option><option value="history">Fork lịch sử</option><option value="unknown">Chưa xác minh fork</option></select>
         <select id="filterSort" aria-label="Sắp xếp"><option value="tokens">Nhiều token nhất</option><option value="name">Tên A → Z</option><option value="price">Giá cao nhất (snapshot)</option><option value="coverage">Đủ dữ liệu 24 tiêu chí</option></select>
       </div>
-      <div class="table-scroll"><table><thead><tr><th>#</th><th>BLOCKCHAIN</th><th>TOKEN (USD)*</th><th>SỐ TOKEN</th><th>ĐỒNG THUẬN (NGUỒN CŨ)</th><th>MÔ HÌNH</th><th>VSIC</th><th>HỒ SƠ</th><th>SO SÁNH</th></tr></thead><tbody id="chainRows"></tbody></table></div>
+      <div class="table-scroll"><table><thead><tr><th>#</th><th>BLOCKCHAIN</th><th>TOKEN (USD)*</th><th>SỐ TOKEN</th><th>ĐỒNG THUẬN (NGUỒN CŨ)</th><th>MÔ HÌNH</th><th>SMART CONTRACT</th><th>EVM</th><th>FORK / TỪ CHAIN</th><th>VSIC</th><th>HỒ SƠ</th><th>SO SÁNH</th></tr></thead><tbody id="chainRows"></tbody></table></div>
       <div class="pagination"><span id="pageInfo"></span><div id="pageButtons" class="page-buttons"></div></div>
       <p class="table-footnote">* Giá, phân loại và token count được lưu từ bản HTML ngày 16/10/2026, chưa được cập nhật trực tiếp. “Hồ sơ” đo mức độ điền thông tin, không phản ánh an toàn hay giá trị đầu tư.</p>
     </section>
@@ -74,6 +89,7 @@
 <script src="./registry-snapshot.js"></script>
 <script src="./registry-loader.js"></script>
 <script src="./chain-icons.js"></script>
+<script src="./chain-taxonomy.js"></script>
 <script src="./app.js"></script>
 </body>
 </html>
