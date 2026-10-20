@@ -10,7 +10,9 @@
   "opmainnet":"optimism","arbitrumone":"arbitrum","ethereummainnet":"ethereum","polygonmainnet":"polygon",
   "polygonpos":"polygon","fantomopera":"fantom","bitcoincash":"bitcoincash","bitcoinmainnet":"bitcoin",
   "avalanchecchain":"avalanche","avalanche":"avalanche","zksyncera":"zksync","solanamainnet":"solana",
-  "hederahashgraph":"hedera","theopennetwork":"ton","ton":"ton","tronnmainnet":"tron"
+  "hederahashgraph":"hedera","theopennetwork":"ton","ton":"ton","tronnmainnet":"tron",
+  "xrp":"ripple","dogecoin":"doge","zksync":"zksyncera","injectiveprotocol":"injective",
+  "stacksblockchain":"stacks","bitcicoin":"bitcichain","kucoinshares":"kucoin","blasttoken":"blast"
  };
  function href(d){
   const list=[d.chainSlug,d.iconKey,d.n,d.n.replace(/\b(mainnet|network|chain)\b/gi,"")].map(norm);
