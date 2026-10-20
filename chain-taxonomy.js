@@ -43,6 +43,9 @@ const forkRows=[
 ["Bitcoin Cash","Bitcoin","history","Chia tách trạng thái và lịch sử chuỗi BTC năm 2017","https://www.govinfo.gov/content/pkg/FR-2024-01-12/html/2024-00507.htm"],
 ["Ethereum Classic","Ethereum / DAO 2016","history","ETC tiếp tục chuỗi nguyên thủy; ETH là nhánh hard fork sau DAO, không nói ETC fork từ ETH mới.",urls.etc],
 ["Zcash","Bitcoin Core 0.11.2","code","Fork mã nguồn Bitcoin Core; không kế thừa UTXO Bitcoin.",urls.zcash],
+["BNB Smart Chain","go-ethereum (Geth)","code","BSC execution client được phát triển từ nhánh mã nguồn go-ethereum; mainnet BSC không kế thừa trạng thái Ethereum.","https://github.com/bnb-chain/bsc-builder"],
+["Polygon","go-ethereum (Geth) / Bor","code","Bor là execution client của Polygon PoS có nguồn gốc mã nguồn Geth; không phải fork lịch sử trạng thái ETH.","https://github.com/0xPolygon/bor"],
+
 ["Dogecoin","Bitcoin Core + các dự án Scrypt","code","Nguồn Dogecoin Core mô tả phái sinh từ Bitcoin Core và các cryptocurrency khác.",urls.dogecoin],
 ["Litecoin","Bitcoin Core","code","Dòng mã phái sinh Bitcoin, genesis độc lập.","https://github.com/litecoin-project/litecoin"],
 ["Bitcoin SV","Bitcoin Cash","history","Tách nhánh Bitcoin Cash trong năm 2018.","https://bitcoinsv.com/"],
