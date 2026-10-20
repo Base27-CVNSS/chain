@@ -48,7 +48,10 @@
  function apply(legacy,generated){
   const base=legacy.slice(),match=generated.matchIndex||{};
   const usedIds=new Set();
-  for(const d of base){const m=match[canonical(d.n)];if(m){for(const key of ["chainSlug","iconKey","networkType","website","explorer","registrySource","tvlSnapshot"])if(m[key]!=null&&!d[key])d[key]=m[key];if(!usedIds.has(m.chainId)&&!d.chainId)d.chainId=m.chainId;}if(d.chainId){if(usedIds.has(d.chainId))delete d.chainId;else usedIds.add(d.chainId)}}
+  // Some EVM registry entries reuse the brand name of a distinct non-EVM mainnet.
+  // Never attach those third-party chain IDs to the legacy L1 record by name alone.
+  const separateMainnets=new Set(["algorand","polkadot","solana","sui","aptos","cardano","stellar","cosmos","ton","bitcoin","litecoin","dogecoin","zcash"]);
+  for(const d of base){const m=separateMainnets.has(canonical(d.n))?null:match[canonical(d.n)];if(m){for(const key of ["chainSlug","iconKey","networkType","website","explorer","registrySource","tvlSnapshot"])if(m[key]!=null&&!d[key])d[key]=m[key];if(!usedIds.has(m.chainId)&&!d.chainId)d.chainId=m.chainId;}if(d.chainId){if(usedIds.has(d.chainId))delete d.chainId;else usedIds.add(d.chainId)}}
   const seen=new Set(base.map(x=>canonical(x.n))),chainIds=new Set(base.filter(x=>x.chainId).map(x=>x.chainId));
   for(const r of generated.extras||[]){const k=canonical(r.n);if(!k||seen.has(k)||chainIds.has(r.chainId)||base.length>=TARGET)continue;seen.add(k);chainIds.add(r.chainId);base.push(r)}
   return base;
