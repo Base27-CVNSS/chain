@@ -23,13 +23,13 @@
  function filterRegistry(entries,legacy,logoNames,target=TARGET){
   if(!Array.isArray(entries))throw Error("Registry API must return an array");
   const iconSet=new Set((logoNames||[]).map(x=>clean(String(x).replace(/^rsz_/i,"").replace(/\.(jpg|png|jpeg|webp)$/i,""))));
-  const taken=new Set(),known=new Set(legacy.map(x=>canonical(x.n)));
+  const taken=new Set(),takenIds=new Set(),known=new Set(legacy.map(x=>canonical(x.n)));
   const mapped=[];
   for(const raw of entries){
     if(!eligible(raw))continue;
     const v=asRecord(raw),key=canonical(v.n);
-    if(!key||taken.has(key))continue;
-    taken.add(key);
+    if(!key||taken.has(key)||takenIds.has(v.chainId))continue;
+    taken.add(key);takenIds.add(v.chainId);
     const variants=[v.n,v.chainSlug,v.iconKey,v.n.replace(/\b(mainnet|network)\b/gi,"")].map(clean);
     v.logoLikely=variants.some(n=>n&&iconSet.has(n));
     v.matchedLegacy=known.has(key);
@@ -47,7 +47,8 @@
  }
  function apply(legacy,generated){
   const base=legacy.slice(),match=generated.matchIndex||{};
-  for(const d of base){const m=match[canonical(d.n)];if(m){for(const key of ["chainId","chainSlug","iconKey","networkType","website","explorer","registrySource","tvlSnapshot"])if(m[key]!=null&&!d[key])d[key]=m[key]}}
+  const usedIds=new Set();
+  for(const d of base){const m=match[canonical(d.n)];if(m){for(const key of ["chainSlug","iconKey","networkType","website","explorer","registrySource","tvlSnapshot"])if(m[key]!=null&&!d[key])d[key]=m[key];if(!usedIds.has(m.chainId)&&!d.chainId)d.chainId=m.chainId;}if(d.chainId){if(usedIds.has(d.chainId))delete d.chainId;else usedIds.add(d.chainId)}}
   const seen=new Set(base.map(x=>canonical(x.n))),chainIds=new Set(base.filter(x=>x.chainId).map(x=>x.chainId));
   for(const r of generated.extras||[]){const k=canonical(r.n);if(!k||seen.has(k)||chainIds.has(r.chainId)||base.length>=TARGET)continue;seen.add(k);chainIds.add(r.chainId);base.push(r)}
   return base;
