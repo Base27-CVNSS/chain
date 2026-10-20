@@ -1,0 +1,37 @@
+/* Web3 neon taxonomy panel, badges, and source-aware lineage visualization */
+.capability-dashboard{margin:17px 0 21px;padding:20px;border:1px solid #514478;
+ border-radius:16px;background:linear-gradient(135deg,rgba(38,25,83,.83),rgba(11,25,50,.96));
+ box-shadow:0 0 35px #7545f716,inset 0 1px 0 #ffffff13}
+.capability-heading{display:flex;justify-content:space-between;align-items:start;gap:15px;margin-bottom:19px}
+.capability-heading h2{font-size:19px;margin:4px 0 4px;color:#f6f5ff;letter-spacing:-.5px}
+.capability-heading p{color:#9aafd0;font-size:11px;margin:0;max-width:740px}
+.capability-heading>a{color:#b9a6ff;font-size:11px;flex-shrink:0;border:1px solid #6956ad;border-radius:7px;padding:7px 11px}
+.capability-heading>a:hover{color:#fff;border-color:#b7a0ff;background:#44336c}
+.cap-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.cap-stat{background:#101833dc;border:1px solid #414776;border-radius:12px;padding:14px;min-width:0}
+.cap-stat:focus-within,.cap-stat:hover{border-color:#7267be}
+.cap-stat small{display:block;color:#a9b5d6;letter-spacing:.65px;font-weight:800;font-size:9px;margin-bottom:6px}
+.cap-stat strong{font-size:24px;display:block;color:white;line-height:1.25}
+.cap-stat p{margin:7px 0 0;color:#94a2c4;font-size:10px}
+.cap-icon{display:inline-block;margin-bottom:8px;font-size:21px;line-height:1;text-shadow:0 0 15px currentColor}
+.cap-icon.purple{color:#b494ff}.cap-icon.cyan{color:#65eaf6}.cap-icon.gold{color:#ffd382}.cap-icon.muted{color:#a0aac5}
+.cap-disclaimer{margin:14px 2px 0;font-size:10px;color:#a2b0d1;line-height:1.7}
+.cap-pill{display:inline-flex;align-items:center;gap:4px;white-space:nowrap;border:1px solid transparent;
+ font-size:10px;font-weight:750;border-radius:6px;padding:5px 7px;max-width:245px;overflow:hidden;text-overflow:ellipsis}
+.cap-pill.yes{background:#063c3cba;color:#6bfff0;border-color:#196c6b}
+.cap-pill.no{background:#273052;color:#b9c8f4;border-color:#3b4774}
+.cap-pill.limited{background:#52371896;color:#ffd48d;border-color:#87602b}
+.cap-pill.unknown{background:#292f4e;color:#a3acca;border-color:#404966;font-weight:600}
+.cap-pill.fork-yes{background:#433169b8;color:#c9aeff;border-color:#7355b2}
+.fork-kind{display:block;color:#8f9dbf;font-size:9px;margin:4px 0 0}
+.tax-card-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:8px 0 16px}
+.tax-card{background:linear-gradient(145deg,#161f42,#111a36);border:1px solid #514778;border-radius:11px;padding:14px;overflow-wrap:anywhere}
+.tax-card small{display:block;font-size:9px;letter-spacing:1.1px;color:#aa9deb;font-weight:800;margin-bottom:9px}
+.tax-card b{font-size:13px;color:#f2f6ff;line-height:1.4;display:block}
+.tax-card p{font-size:11px;color:#a9b9d6;line-height:1.6;min-height:44px}
+.tax-card a{font-size:11px;text-decoration:underline;color:#70f4e3}
+.tax-card a:hover{color:#fff}
+.table-scroll table th:nth-child(7),.table-scroll table th:nth-child(8),.table-scroll table th:nth-child(9){color:#b7a4ff}
+.table-scroll table th{position:sticky;top:0;z-index:2}
+@media(max-width:1100px){.cap-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.tax-card-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:650px){.capability-heading{flex-direction:column}.cap-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.cap-stat{padding:10px}.cap-stat strong{font-size:20px}.tax-card-grid{grid-template-columns:1fr}.capability-dashboard{padding:13px}}
