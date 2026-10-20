@@ -24,6 +24,8 @@ assert.equal(classify(byName("Base")).fork.status,"unknown","Ethereum L2 != hist
 assert.equal(classify(byName("Bitcoin Cash")).fork.type,"history");
 assert.equal(classify(byName("Ethereum Classic")).fork.type,"history");
 assert.equal(classify(byName("Dogecoin")).fork.type,"code");
+assert.equal(classify(byName("Binance Smart Chain")).fork.type,"code");
+assert.equal(classify(byName("Polygon")).fork.type,"code");
 assert(totals.smartYes>0&&totals.smartUnknown>0&&totals.forkDocumented>0);
 assert.equal(totals.smartYes+totals.smartLimited+totals.smartEcosystem+totals.smartUnknown,600);
 assert.equal(totals.evmYes+totals.evmNo+totals.evmUnknown,600);
