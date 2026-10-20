@@ -5,6 +5,8 @@ on:
     paths:
       - 'scripts/update-chains.cjs'
       - 'registry-core.js'
+      - 'chain-taxonomy.js'
+      - 'scripts/test-taxonomy.cjs'
       - 'chain-logos.js'
       - '.github/workflows/update-registry.yml'
   schedule:
