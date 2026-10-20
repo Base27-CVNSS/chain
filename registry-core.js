@@ -22,8 +22,7 @@
  }
  function filterRegistry(entries,legacy,logoNames,target=TARGET){
   if(!Array.isArray(entries))throw Error("Registry API must return an array");
-  const iconSet=new Set((logoNames||[]).map(clean));
-  const cleanLogo=String(v=>v);
+  const iconSet=new Set((logoNames||[]).map(x=>clean(String(x).replace(/^rsz_/i,"").replace(/\.(jpg|png|jpeg|webp)$/i,""))));
   const taken=new Set(),known=new Set(legacy.map(x=>canonical(x.n)));
   const mapped=[];
   for(const raw of entries){
@@ -32,7 +31,7 @@
     if(!key||taken.has(key))continue;
     taken.add(key);
     const variants=[v.n,v.chainSlug,v.iconKey,v.n.replace(/\b(mainnet|network)\b/gi,"")].map(clean);
-    v.logoLikely=variants.some(n=>n&&[...iconSet].some(f=>f===n||f===("rsz "+n)));
+    v.logoLikely=variants.some(n=>n&&iconSet.has(n));
     v.matchedLegacy=known.has(key);
     mapped.push(v);
   }
