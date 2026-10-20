@@ -21,17 +21,41 @@ Deep violet, electric cyan, mint-neon, and indigo glass styling with mobile resp
 - Full CSV and JSON export, up to 3 blockchain comparison, local-only field corrections.
 - Legacy trend charts retain their original scope. Missing token counts for new chains are not interpreted as zero tokens.
 
+
+## Smart contracts, EVM compatibility, fork lineage (2026-10-20)
+
+The directory table now includes **three separate columns**:
+- **SMART CONTRACT:** ✓ general-purpose contract VM (runtime identified / inferred EVM registry), ◐ limited scripting, ? unknown. Polkadot refers specifically to **Polkadot Hub REVM/PVM**, not generalized contract execution directly on the relay chain. Algorand uses **AVM / TEAL** and is **not** classified as native EVM.
+- **EVM:** ✓ EVM compatibility. **Being EVM-compatible is not a code fork, history fork, or an L2 rollup by itself.** The source registry may contain experimental, outdated, or special-purpose entries; a tick here does not prove that the chain is reachable at present.
+- **FORK / TỪ CHAIN:** a tick appears **only when the particular code-derived or historical fork relationship is documented** with a source link. Historical state-split is distinct from reusing software architecture. An em dash is "unverified" and **not "definitely no fork"**.
+- The popup has an additional three-card capability/lineage section with the referenced runtime, fork parent/type, technology stack and supporting URLs. Comparison and CSV/JSON export include these classification fields. Filters cover smart contract, EVM/non-EVM, verified fork, fork-code and fork-history.
+
+**Measured from this 600-entry snapshot (at implementation):** 526 are classified with a generalized smart-contract environment, 4 with limited script, 70 unknown; 495 are EVM-compatible, 35 non-EVM, 70 not classified; **3** have documented fork lineage within the present 600 records. Counts are recalculated in the UI after registry refresh and must not be presented as worldwide market shares or comprehensively audited chains.
+
+**External context:** [Alchemy's blockchain directory](https://www.alchemy.com/dapps/top/blockchains) displayed 162 listed projects when reviewed, **not a count of every blockchain worldwide**. Therefore no automatic import of the suggested “97.3% smart contracts”, “80% EVM”, or “140–170 non-EVM” assumptions is used. Likewise the 600-entry list over-represents EVM networks due to the input source.
+
+**Taxonomy implementation:** `chain-taxonomy.js` contains a versioned, reviewable evidence map (native runtimes, known EVM families, verified fork origins, L2 stacks). New names without documentation stay unknown. Primary references include:
+- [Ethereum sidechains](https://ethereum.org/developers/docs/scaling/sidechains/)
+- [Solana programs](https://solana.com/docs/core/programs)
+- [Cardano Plutus](https://docs.cardano.org/developer-resources/smart-contracts/plutus)
+- [Algorand AVM](https://dev.algorand.co/concepts/smart-contracts/avm/)
+- [Polkadot Hub smart contracts](https://docs.polkadot.com/smart-contracts/overview/)
+- [Ethereum Classic history](https://www.ethereumclassic.org/knowledge/history/)
+- [Zcash historical Bitcoin Core source fork](https://zcash.github.io/zcash/design.html)
+- [Dogecoin source](https://github.com/dogecoin/dogecoin)
+
 ## Data architecture
 
 ```
 index.html                       Static UI shell
-styles.css, neon.css              Layout and Web3 neon design
+styles.css, neon.css, taxonomy.css  Layout and Web3 neon design
 data.js                           Legacy 257 records; historical
 registry-core.js                  Canonical identity, filtering, deduplication, 600 cap
 registry-snapshot.js              Generated static 343-record addendum (GitHub Actions)
 registry-loader.js                Immediate static load; online ChainList fallback if missing
 chain-logos.js                    865 original filename entries from DefiLlama/icons
-chain-icons.js                    Verified asset matching + nonofficial monogram fallback
+chain-icons.js                    Source asset matching + nonofficial monogram fallback
+chain-taxonomy.js                 Reviewable EVM/contract/fork classification with source URLs
 app.js                            Charts, table, search, checklist, compare, export
 scripts/update-chains.cjs         Reproducible Node 22 snapshot generator
 .github/workflows/update-registry.yml  Weekly registry refresh + commit
