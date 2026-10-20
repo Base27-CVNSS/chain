@@ -2,6 +2,7 @@
 "use strict";
 const D=Array.isArray(window.DATA)?window.DATA:[], DETAIL=window.CHAIN_DETAILS||{}, VSIC=window.VSIC_SECTORS||{};
 const $=id=>document.getElementById(id);
+const CHAIN_ICON=d=>window.ChainIcons?window.ChainIcons.avatar(d,false):`<span class="avatar">${E(d.s||d.n)}</span>`;
 const E=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const num=n=>Number(n||0).toLocaleString("vi-VN");
 const money=n=>Number.isFinite(n)?("$"+(n>=1000?n.toLocaleString("en-US",{maximumFractionDigits:0}):n>=1?n.toFixed(2):n>=.01?n.toFixed(4):n.toFixed(8).replace(/0+$/,""))):"—";
@@ -64,7 +65,7 @@ function fields(d){
  put("totalSupply",old.totalSupply);
  put("marketCap",old.marketCap&&old.marketCap+" · Giá trị lịch sử trong dữ liệu gốc (16/10/2026)");
  put("decentralization",old.decentralized);
- put("consensus",d.con==="Not recorded"?"":d.con);
+ put("consensus",d.con==="Not recorded"?"":d.con);\n if(d.chainId){put("architecture",(d.networkType==="L2"?"Ethereum L2 / EVM":"EVM-compatible network")+" · EIP-155 chain ID "+d.chainId,"registry");}\n if(d.website)put("website","Trang được liệt kê trong ChainList","registry",d.website);\n if(d.explorer)put("explorer","Block explorer trong ChainList","registry",d.explorer);
  put("coin",d.s&&d.s!=="—"?(d.s+" · ticker ghi trong bộ dữ liệu nguồn; xác nhận native/token riêng còn cần kiểm tra"):null);
  if(old.dapps?.length)put("dapps",old.dapps.map(x=>x.name+" ("+x.desc+")").join("; "));
  for(let [k,v] of Object.entries(known)){
@@ -132,7 +133,7 @@ function table(){
  $("chainRows").innerHTML=rows.slice(start,start+pageSize).map(({d,i},j)=>{
   const p=coverage(d),c=d.con||"Chưa ghi nhận",css=/PoW/i.test(c)?"amber":/PoS|Rollup|L2/i.test(c)?"green":"muted";
   const s=(d.vsic||[]).slice(0,5).map(code=>`<span class="sector-badge" title="${E(VSIC[code])}">${E(code)}</span>`).join("")||"—";
-  return `<tr><td>${start+j+1}</td><td><button type="button" class="chain-cell" data-open="${i}"><span class="avatar">${E(d.s&&d.s!=="—"?d.s.slice(0,2):d.n.slice(0,2))}</span><span>${E(d.n)}<span class="ticker" style="display:block">${E(d.s)}</span></span></button></td><td>${money(d.p)}</td><td>${num(d.t)}</td><td><span class="tag ${css}" title="${E(c)}">${E(c)}</span></td><td><span class="tag muted" title="${E(d.iso)}">${E(d.iso)}</span></td><td>${s}</td><td><span class="cover"><span class="cover-track"><i style="width:${p/24*100}%"></i></span>${p}/24</span></td><td><input aria-label="Chọn ${E(d.n)} để so sánh" class="compare-check" type="checkbox" data-select="${i}" ${selected.has(i)?"checked":""}></td></tr>`;
+  return `<tr><td>${start+j+1}</td><td><button type="button" class="chain-cell" data-open="${i}">${CHAIN_ICON(d)}<span>${E(d.n)}<span class="ticker" style="display:block">${E(d.s)}</span></span></button></td><td>${money(d.p)}</td><td>${d.t==null?"—":num(d.t)}</td><td><span class="tag ${css}" title="${E(c)}">${E(c)}</span></td><td><span class="tag muted" title="${E(d.networkType||d.iso)}">${E(d.networkType||d.iso)}</span></td><td>${s}</td><td><span class="cover"><span class="cover-track"><i style="width:${p/24*100}%"></i></span>${p}/24</span></td><td><input aria-label="Chọn ${E(d.n)} để so sánh" class="compare-check" type="checkbox" data-select="${i}" ${selected.has(i)?"checked":""}></td></tr>`;
  }).join("")||'<tr><td colspan="9" class="empty-state">Không có kết quả phù hợp.</td></tr>';
  $("pageInfo").textContent=rows.length?"Hiển thị "+num(start+1)+"–"+num(Math.min(rows.length,start+pageSize))+" / "+num(rows.length):"0 kết quả";
  const controls=[],button=(label,page,disabled,isCurrent)=>`<button ${disabled?"disabled":""} ${isCurrent?'class="current"':""} data-page="${page}" type="button">${label}</button>`;
@@ -154,8 +155,8 @@ function fieldHTML(def,obj){
 function openModal(i){
  const d=D[i];if(!d)return;
  lastFocus=document.activeElement;currentModal=i;const vals=fields(d),progress=coverage(d),old=DETAIL[d.n]||{};
- $("modalHeadline").innerHTML=`<div class="modal-title-wrap"><span class="avatar">${E(d.s&&d.s!=="—"?d.s.slice(0,2):d.n.slice(0,2))}</span><div><h2 id="modalTitle">${E(d.n)}</h2><p>${E(d.s)} · ${E(d.iso)} · Hồ sơ ${progress}/24 tiêu chí</p></div></div>`;
- const metric=[["Số token (nguồn cũ)",num(d.t)],["Giá snapshot",money(d.p)],["Độ đầy đủ",progress+"/24"],["Ngành VSIC",(d.vsic||[]).length+" ngành"]];
+ $("modalHeadline").innerHTML=`<div class="modal-title-wrap">${window.ChainIcons?window.ChainIcons.avatar(d,true):CHAIN_ICON(d)}<div><h2 id="modalTitle">${E(d.n)}</h2><p>${E(d.s)} · ${E(d.chainId?"EIP-155:"+d.chainId+" · ":"")}${E(d.networkType||d.iso)} · Hồ sơ ${progress}/24 tiêu chí</p></div></div>`;
+ const metric=[["Số token (nguồn cũ)",d.t==null?"Không có dữ liệu":num(d.t)],["Giá snapshot",money(d.p)],["Độ đầy đủ",progress+"/24"],["Ngành VSIC",(d.vsic||[]).length+" ngành"]];
  let html=`<div class="modal-strip">${metric.map(([k,v])=>`<div class="modal-metric"><small>${E(k)}</small><strong>${E(v)}</strong></div>`).join("")}</div><div class="modal-intro"><b>Trạng thái dữ liệu:</b> Bản ghi tĩnh ngày 16/10/2026, không phải dữ liệu thời gian thực. Các giá trị kế thừa nguồn HTML gốc và tham chiếu bổ sung cần được đối chiếu với nguồn chính thức. Hồ sơ ${progress}/24 biểu thị số trường đã được điền, không phải điểm tin cậy.</div>`;
  if(old.overview)html+=`<div class="modal-summary"><b>Tổng quan theo tệp HTML gốc</b><div>${E(old.overview)}</div>${old.history?`<p><b>Lịch sử theo nguồn cũ:</b> ${E(old.history)}</p>`:""}</div>`;
  html+=`<div class="modal-actions"><button class="btn ghost" type="button" data-export-chain="1">↓ Xuất hồ sơ JSON</button><span class="badge-note">✎ Hiệu chỉnh lưu cục bộ trên trình duyệt; không ghi vào GitHub.</span></div>`;
@@ -187,4 +188,15 @@ function exportCSV(){
 }
 function exportJSON(){download("chainscope-snapshot.json",JSON.stringify({source:"Uploaded HTML snapshot dated 2026-10-16; unverified",categories:GROUPS,vsic:VSIC,chains:D,legacyDetails:DETAIL,editorialReferences:KNOWN,localOverrides:CHECKED},null,2),"application/json")}
 stat();setup();table();counts();
+document.addEventListener("chainscope:updated",e=>{
+  const f=$("filterConsensus"),old=f.value;f.innerHTML='<option value="">Tất cả đồng thuận</option>';
+  [...new Set(D.map(d=>d.con).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"vi")).forEach(c=>f.add(new Option(c,c)));
+  if([...f.options].some(x=>x.value===old))f.value=old;
+  stat();table();counts();
+  const el=$("registryStatus");if(el)el.textContent="600 hồ sơ · "+(e.detail?.extra||0)+" mạng ChainList · nguồn "+String(e.detail?.fetchedAt||"").slice(0,10);
+});
+if(window.ChainRegistry?.snapshot){
+ const m=window.ChainRegistry.snapshot,el=$("registryStatus");
+ if(el)el.textContent=m.count+" hồ sơ · "+m.extra+" mạng EVM bổ sung · "+String(m.fetchedAt||"").slice(0,10);
+}
 })();
