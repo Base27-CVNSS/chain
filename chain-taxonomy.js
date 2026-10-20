@@ -18,7 +18,7 @@ const urls={
 };
 const EVM=new Set("Ethereum|BNB Smart Chain|Base|Polygon|Arbitrum|Avalanche|Fantom|Cronos|Chiliz|Pulsechain|Sonic|Kaia|zkSync|Harmony|Blast Token|Berachain|Linea|Metis|Monad|Optimism|Celo|Gnosis|Moonriver|Moonbeam|Aurora|ZetaChain|Zilliqa|Rootstock|smartBCH|Ethereum Classic|Scroll|Mantle|Manta Network|Shibarium|Astar|Kava|Evmos|Fuse|Wanchain|Oasis Network|Canto|Telos|Worldchain|opBNB|Ronin|Plasma|Flare Network|Neon|X Layer|XDC Network|Soneium|Sei-v2|Sei|Vechain|Viction|Gravity|ThunderCore|Ubiq|WEMIX|Conflux|HyperEVM|KardiaChain|Meter|BitTorrent Token|Velas|Oasys|Lukso|Syscoin|Degen (Base)|Etherlink|BOB|Citrea|Core DAO|Ink|Frax|Apechain|Blast|Abstract|Taiko|Polygon zkEVM|SKALE|Hedera".split("|").map(canon));
 const nativeRows=[
-["Solana","SVM / sBPF programs",urls.solana],["Cardano","Plutus / eUTXO",urls.cardano],["Algorand","AVM / TEAL","https://dev.algorand.co/"],
+["Solana","SVM / sBPF programs",urls.solana],["Cardano","Plutus / eUTXO",urls.cardano],["Algorand","AVM / TEAL","https://dev.algorand.co/concepts/smart-contracts/avm/"],
 ["Aptos","Move VM","https://aptos.dev/"],["Sui","Move / object-centric","https://docs.sui.io/"],
 ["NEAR","WASM / NEAR runtime","https://docs.near.org/smart-contracts/what-is"],
 ["TON","TVM","https://docs.ton.org/"],["Tron","TVM / Solidity","https://developers.tron.network/docs/virtual-machine-introduction"],
@@ -28,7 +28,7 @@ const nativeRows=[
 ["FLOW","Cadence","https://developers.flow.com/cadence"],["Secret","CosmWasm","https://docs.scrt.network/"],
 ["Injective Protocol","CosmWasm","https://docs.injective.network/"],["Osmosis","CosmWasm","https://docs.osmosis.zone/"],
 ["Juno Network","CosmWasm","https://docs.junonetwork.io/"],["Terra","CosmWasm","https://docs.terra.money/"],
-["Polkadot","Smart contracts qua parachain; không triển khai trực tiếp trên relay chain","https://wiki.polkadot.com/learn/learn-parachains"],
+["Polkadot","REVM/PVM trên Polkadot Hub; relay chain không chạy hợp đồng trực tiếp","https://docs.polkadot.com/smart-contracts/overview/"],
 ["ICON","SCORE","https://docs.icon.community/"],["Ontology","NeoVM / WASM","https://docs.ont.io/"],
 ["Radix","Scrypto","https://docs.radixdlt.com/"],["Chia","Chialisp","https://docs.chia.net/chialisp-intro/"],
 ["Stacks Blockchain","Clarity","https://docs.stacks.co/"],["Alephium","Ralph","https://docs.alephium.org/"],
@@ -65,8 +65,8 @@ function classify(d){
  let smart="unknown",evm="unknown",runtime="Chưa xác minh",source="",basis="Chưa có nguồn xác nhận.";
  if(isRegistry||legacyEvm){smart="yes";evm="yes";runtime="EVM / EIP-155";source=isRegistry?urls.chainlist:urls.evm;
  basis=isRegistry?"Có trong ChainList EVM; chưa kiểm thử RPC hoặc deploy hợp đồng.":"Đối chiếu kiến trúc biên tập, chưa kiểm thử runtime.";}
- if(NATIVE[n]&&!isRegistry){smart=n==="polkadot"?"ecosystem":"yes";evm=n==="hedera"||n==="theta network"?"yes":"no";runtime=NATIVE[n].runtime;source=NATIVE[n].url;basis="Tham chiếu tài liệu runtime kỹ thuật.";}
- if(LIMITED[n]&&!isRegistry){smart="limited";evm="no";runtime=LIMITED[n].runtime;source=LIMITED[n].url;basis="Không đánh đồng script hạn chế với smart contract đa dụng.";}
+ if(NATIVE[n]){smart="yes";evm=n==="hedera"||n==="theta network"||n==="polkadot"?"yes":"no";runtime=NATIVE[n].runtime;source=NATIVE[n].url;basis=n==="polkadot"?"EVM chỉ ở Polkadot Hub, không phải relay chain.":"Tham chiếu tài liệu runtime kỹ thuật."; }
+ if(LIMITED[n]){smart="limited";evm="no";runtime=LIMITED[n].runtime;source=LIMITED[n].url;basis="Không đánh đồng script hạn chế với smart contract đa dụng.";}
  if(n==="ethereum"){smart="yes";evm="yes";runtime="EVM / Solidity";source=urls.evm;basis="Ethereum L1."}
  return {smart,evm,runtime,source,basis,
  fork:FORKS[n]||{status:"unknown",from:"",type:"",detail:"Chưa có bằng chứng trong danh mục; không mặc nhiên kết luận không có fork.",source:""},
